@@ -20,6 +20,7 @@ Route::get('/getFichaProspecto/{folio_crm}/{promotor}', [FichaController::class,
 Route::get('/search/crm/{type_search}/{text_search}/{clave_plantel}', [FichaController::class, 'searcCrm'])->name('search.crm');
 Route::get('/guardar/bitacora', [FichaController::class, 'guardarBitacora'])->name('guardar.bitacora');
 Route::get('/guardar/referido', [FichaController::class, 'guardarReferido'])->name('guardar.referido');
+Route::get('/optener/referidos/{folio_crm}', [FichaController::class, 'getReferidos'])->name('get.referidos');
 
 //! Consultas a la api
 
@@ -32,3 +33,10 @@ Route::get('/obtener/horarios/{claveCampana}/{clavePlantel}/{claveNivel}/{claveC
 Route::get('/obtener/campanas/{claveCampana}', [PeticionesController::class, 'getCampanas'])->name('obtener.campanas');
 Route::get('/obtener/mensajes/whatsapp/{folio_crm}', [PeticionesController::class, 'getConversacionesWhatsapp'])->name('obtener.mensajes');
 Route::get('/obtener/menu/{idMenu}', [PeticionesController::class, 'getMenu'])->name('obtener.menu');
+//combos bitacora
+Route::get('/obtener/estados', [PeticionesController::class, 'getCatalogoEstatusDetalle']);
+Route::get('/obtener/horariosContacto', [PeticionesController::class, 'getCatalogoHorarioContacto']);
+Route::get('/obtener/actividadesRealizadas/{type}', [PeticionesController::class, 'getCatalogoTipoContacto']);
+Route::get('/obtener/actividadesProximas/{type}', [PeticionesController::class, 'getCatalogoTipoContacto']);
+Route::get('/viabilidad/matriculacion/{folioCRM}', [PeticionesController::class, 'viabilidadMatriculacion'])->name('viabilidad.matricula');
+

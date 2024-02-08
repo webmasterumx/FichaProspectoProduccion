@@ -1,40 +1,30 @@
 <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
     <div class="row">
-        <div class="col-12 col-md-4">
+
+        <div id="cargador_bitacora" class="col-12 mt-3 text-center d-none">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p>Cargando datos</p>
+        </div>
+
+        <div id="form_bitacora" class="col-12 col-md-4 d-none">
             <form id="formBitacora" action="{{ route('guardar.bitacora') }}" method="GET">
                 <select class="form-select form-select-sm mb-3" aria-label="Default select example"
                     id="actividadRealizada" name="actividadRealizada">
-                    @foreach ($actividadesRealizadas as $actividadRealizada)
-                        <option value="{{ $actividadRealizada['tipoContacto'] }}">
-                            {{ $actividadRealizada['Descripcion'] }}
-                        </option>
-                    @endforeach
                 </select>
                 <select class="form-select form-select-sm mb-3" aria-label="Default select example" id="estatusDetalle"
                     name="estatusDetalle">
-                    <option selected disabled>Selecciona Estattus Detalle</option>
-                    @foreach ($estados as $estado)
-                        <option value="{{ $estado['clave'] }}">{{ $estado['descrip'] }}</option>
-                    @endforeach
                 </select>
                 <select class="form-select form-select-sm mb-3" aria-label="Default select example"
                     id="actividadProxima" name="actividadProxima">
-                    @foreach ($actividadesProximas as $actividadProxima)
-                        <option value="{{ $actividadProxima['tipoContacto'] }}">
-                            {{ $actividadProxima['Descripcion'] }}
-                        </option>
-                    @endforeach
                 </select>
                 <div class="mb-3">
                     <label for="date_bitacora" class="form-label">Elegir fecha</label>
-                    <input type="date" class="form-control" id="date_bitacora" name="date_bitacora">
+                    <input type="date" class="form-control" id="date_bitacora" name="date_bitacora" value="">
                 </div>
                 <select class="form-select form-select-sm mb-3" aria-label="Default select example" id="horarioContacto"
                     name="horarioContacto">
-                    <option selected>Seleccion Horario de Contactación</option>
-                    @foreach ($horarios as $horario)
-                        <option value="{{ $horario['id'] }}"> {{ $horario['nombre'] }} </option>
-                    @endforeach
                 </select>
                 <div class="mb-3">
                     <label for="exampleFormControlTextarea1" class="form-label">Comentarios o
@@ -49,7 +39,7 @@
                 @endisset
             </form>
         </div>
-        <div class="col-12 col-md-8">
+        <div id="lista_bitacora" class="col-12 col-md-8 d-none">
             <div class="table-responsive" style="overflow-y: scroll;  height: 300px;">
                 <table id="bitacora_table" class="table table-sm">
                     <thead>
@@ -70,7 +60,7 @@
                     </tbody>
                 </table>
             </div>
-            <button type="submit" form="formBitacora" class="btn btn-primary mt-3"><i class="bi bi-floppy-fill"></i>
+            <button id="enviarActividad" type="submit" form="formBitacora" class="btn btn-primary mt-3"><i class="bi bi-floppy-fill"></i>
                 &nbsp; Guardar Actividad</button>
         </div>
     </div>

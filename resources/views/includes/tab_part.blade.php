@@ -3,10 +3,11 @@
         <div class="nav nav-tabs" id="nav-tab" role="tablist" style="background-color: #f0ad4e;">
             <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
                 role="tab" aria-controls="nav-home" aria-selected="true">Datos de Contacto</button>
-            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
-                type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Seguimiento
+            <button onclick="getBitacora()" class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
+                type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
+                Seguimiento
                 del Prospecto</button>
-            <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
+            <button onclick="getReferidos()" class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
                 type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Referidos
                 del Prospecto</button>
         </div>

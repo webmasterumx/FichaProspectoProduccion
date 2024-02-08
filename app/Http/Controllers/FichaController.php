@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Response;
 
 class FichaController extends Controller
@@ -15,79 +16,45 @@ class FichaController extends Controller
         //* optencion de la info prospecto
         if ((isset($_REQUEST['folio_crm']) == true)) {
             $folio_crm = $_REQUEST['folio_crm'];
-
             $infoProspecto = app(PeticionesController::class)->getFichaProspecto($folio_crm);
-            
-            $claveCampana = $infoProspecto['claveCampana'];
-            $clavePlantel = $infoProspecto['clavePlantel'];
-            $claveNivel = $infoProspecto['claveNivel'];
-            $claveCarrera = $infoProspecto['claveCarrera'];
-
-            $niveles = app(PeticionesController::class)->getNiveles($clavePlantel);
-            $carreras = app(PeticionesController::class)->getCarreras($claveCampana, $clavePlantel, $claveNivel, $claveCarrera);
-
+            $verificaciones = new VerificacionesController($infoProspecto);
+            $campanasList = app(PeticionesController::class)->getCampanas(0);
+            $campanas = (isset($campanasList['EntCampanaDTO'])) ? $campanasList['EntCampanaDTO'] : array();
+            $plantelesList = app(PeticionesController::class)->getPlanteles();
+            $niveles = $verificaciones->getNiveles();
+            $carrreasList = $verificaciones->getCarreras();
+            $carrreas = (isset($carrreasList['Carrera'])) ? $carrreasList['Carrera'] : array();
+            $horariosList  = $verificaciones->getHorarios();
+            $horarios = (isset($horariosList['Horarios'])) ? $horariosList['Horarios'] : array();
+            $origenesList = app(PeticionesController::class)->getOrigenes();
+            $origenes = (isset($origenesList['OrigenesDTO'])) ? $origenesList['OrigenesDTO'] : array();
         } else {
             $niveles = [];
-            $carreras = array(
-                "Carrera" => array()
-            );
+            $infoProspecto = array();
+            $campanas = array();
+            $plantelesList = array();
+            $niveles = array();
+            $carrreas = array();
+            $horarios = array();
+            $origenes = array();
         }
-        
-        //? metodos de llenado de combos de informacion superior de prospecto
-        $campañas = app(PeticionesController::class)->getCampanas(0);
-        $planteles = app(PeticionesController::class)->getPlanteles();
-   
+
         //dd($carreras);
-
-        $estados = app(PeticionesController::class)->getCatalogoEstatusDetalle();
-        $horarios = app(PeticionesController::class)->getCatalogoHorarioContacto();
-
         $actividadesRealizadas = app(PeticionesController::class)->getCatalogoTipoContacto(1); //! combo lista de actividades realizadas
         $actividadesProximas = app(PeticionesController::class)->getCatalogoTipoContacto(2); //! combo lista de actividades por realizar
 
-        if ((isset($_REQUEST['folio_crm']) == true)) {
-            $folio_crm = $_REQUEST['folio_crm'];
-            $referidosRespone = app(PeticionesController::class)->obtenerReferidosProspecto($folio_crm);
-
-            if (sizeof($referidosRespone) > 0) {
-                if (isset($referidosRespone['ProspectoCallCenter']['folioCRM'])) {
-                    $referidosList  = array(
-                        "folioCRM" => $referidosRespone['ProspectoCallCenter']['folioCRM'],
-                        "nombreCompleto" => $referidosRespone['ProspectoCallCenter']['nombreCompleto'],
-                        "telefono1" => $referidosRespone['ProspectoCallCenter']['telefono1'],
-                        "telefono2" => $referidosRespone['ProspectoCallCenter']['telefono2'],
-                        "celular1" => $referidosRespone['ProspectoCallCenter']['celular1'],
-                        "celular2" => $referidosRespone['ProspectoCallCenter']['celular2'],
-                        "email" => $referidosRespone['ProspectoCallCenter']['email']
-                    );
-
-                    $referidoFinal = array();
-
-                    array_push($referidoFinal, $referidosList);
-
-                    $referidos = $referidoFinal;
-                } else {
-                    $referidos = $referidosRespone['ProspectoCallCenter'];
-                }
-            } else {
-                $referidos = array();
-            }
-        } else {
-            $referidos = array();
-        }
-
-        //dd($referidos);
+        //dd($infoProspecto);
 
         return view('inicio', [
-            "campañas" => $campañas['EntCampanaDTO'],
-            "planteles" => $planteles,
+            "ficha_prospecto" => $infoProspecto,
+            "campanas" => $campanas,
+            "planteles" => $plantelesList,
             "niveles" => $niveles,
-            "carreras" => $carreras['Carrera'],
-            "estados" => $estados['EstatusDetalle'],
-            "horarios" => $horarios['RangoContactacion'],
+            "carreras" => $carrreas,
+            "horarios" => $horarios,
+            "origenes" => $origenes,
             "actividadesRealizadas" => $actividadesRealizadas['TipoContacto'],
             "actividadesProximas" => $actividadesProximas['TipoContacto'],
-            "referidos" => $referidos,
         ]);
     }
 
@@ -126,72 +93,31 @@ class FichaController extends Controller
     public function guardarDatosProspecto(Request $request)
     {
 
-        if ($request->campana_info === "" || $request->campana_info === null) {
-            //print('no hay campaña <br>');
-            $campana_info = 1;
-        }
-        else {
-            //print(' si hay campaña <br>');
-            $campana_info = $request->campana_info;
-        }
-        if ($request->plantel_info === "" || $request->plantel_info === null) {
-            //print('no hay plantel <br>');
-            $plantel_info = 1;
-        }
-        else {
-            //print(' si hay plantel <br>');
-            $plantel_info = $request->plantel_info;
-        }
-        if ($request->nivel_info === "" || $request->nivel_info === null) {
-            //print('no hay nivel <br>');
-            $nivel_info = 1;
-        }
-        else {
-            //print(' si hay nivel <br>');
-            $nivel_info = $request->nivel_info;
-        }
-        if ($request->carrera_info === "" || $request->carrera_info === null) {
-            //print('no hay carrera <br>');
-            $carrera_info = 1;
-        }
-        else {
-            print(' si hay carrera <br>');
-            $carrera_info = $request->carrera_info;
-        }
-        if ($request->horario_info === "" || $request->horario_info === null) {
-            //print('no hay horario <br>');
-            $horario_info = 1;
-        }
-        else {
-            //print(' si hay horario <br>');
-            $horario_info = $request->horario_info;
-        }
 
-
-       $valores = array(
-            "folioCRM" => $request->folio_crm,
-            "claveCampana" => $campana_info,
-            "clavePlantel" => $plantel_info,
-            "claveNivel" => $nivel_info,
-            "claveCarrera" =>  $carrera_info,
-            "claveHorario" => $horario_info,
-            "nombre" => $request->nombre_form,
-            "apPaterno" => $request->apellidos_form,
-            "apMaterno" => $request->apellido_mat_form,
-            "telefono1" => $request->telefono_uno,
-            "telefono2" => $request->telefono_dos,
-            "celular1" => $request->celular_uno,
-            "celular2" => $request->celular_dos,
-            "email" => $request->email_form,
+        $valores = array(
+            "folioCRM" => $_REQUEST['folio_crm'],
+            "claveCampana" => $_REQUEST['claveCampana'],
+            "clavePlantel" => $_REQUEST['clavePlantel'],
+            "claveNivel" => $_REQUEST['claveNivel'],
+            "claveCarrera" =>  $_REQUEST['claveCarrera'],
+            "claveHorario" => $_REQUEST['claveHorario'],
+            "nombre" => $_REQUEST['nombre_form'],
+            "apPaterno" => $_REQUEST['apellidos_form'],
+            "apMaterno" => $_REQUEST['apellido_mat_form'],
+            "telefono1" => $_REQUEST['telefono_uno'],
+            "telefono2" => $_REQUEST['telefono_dos'],
+            "celular1" => $_REQUEST['celular_uno'],
+            "celular2" => $_REQUEST['celular_dos'],
+            "email" => $_REQUEST['email_form'],
         );
-
-        //dd($valores);
 
         $envio = app(PeticionesController::class)->guardarDatosGeneralesProspecto($valores);
 
-        //dd($envio);
-
-        return redirect()->back(); 
+        if ($envio === true) {
+            echo true;
+        } else {
+            echo false;
+        }
     }
     public function searcCrm($search_type, $search_text, $search_plantel)
     {
@@ -208,9 +134,10 @@ class FichaController extends Controller
         );
 
         $busqueda = app(PeticionesController::class)->getBusqueda($valores);
+        //dd($busqueda);
         $resulList = array();
 
-        if (isset($busqueda['ProspectoCallCenter']['folioCRM'])) {
+        if (isset($busqueda['ProspectoCallCenter']['folioCRM'])) { // comprovacion de una sola pocision en la lista de retorno
             //echo 'es uno';
 
             $resultado = array(
@@ -225,11 +152,25 @@ class FichaController extends Controller
 
             array_push($resulList, $resultado);
         } else {
-            //echo 'son mas de uno';
-
-            $resulList = $busqueda['ProspectoCallCenter'];
+            //comprobar respuest
+            if (($busqueda == null) || $busqueda === NULL) {
+                //no hay resultados que mostrar
+                $resulList = array();
+            } else if (is_array($busqueda)) {
+                //evalua si es un array
+                if (sizeof($busqueda) > 0) {
+                    //trae resultados
+                    $resulList = $busqueda['ProspectoCallCenter'];
+                } else {
+                    // no trae nada
+                    $resulList = array();
+                }
+            } else {
+                $resulList = array();
+            }
         }
 
+        //dd($resulList);
         return Response::json($resulList);
     }
 
@@ -280,42 +221,104 @@ class FichaController extends Controller
     public function guardarBitacora(Request $request)
     {
 
+        if ($_REQUEST['date_bitacora'] == null || $_REQUEST['date_bitacora'] == "")  {
+            echo 'no hay fecha';
+            $date = " ";
+        }
+        else{
+            echo 'si hay fecha';
+            $date = $_REQUEST['date_bitacora'];
+        }
+
+        if ($_REQUEST['actividadProxima'] == 0) {
+            $contacto = null;
+        } else {
+            $contacto = $_REQUEST['actividadProxima'];
+        }
+
+        if ($_REQUEST['horarioContacto'] == 0) {
+            $horario = null;
+        } else {
+            $horario = $_REQUEST['horarioContacto'];
+        }
+
         $valores = array(
-            "folioCRM" => $request->folio_crm,
-            "actRealizada" => $request->actividadRealizada,
-            "estatusDetalle" => $request->estatusDetalle,
-            "tipoContacto" => $request->actividadProxima,
-            "fechaAgenda" => $request->date_bitacora,
-            "idRangoHr" => $request->horarioContacto,
+            "folioCRM" => $_REQUEST['folio_crm'],
+            "actRealizada" => $_REQUEST['actividadRealizada'],
+            "estatusDetalle" => $_REQUEST['estatusDetalle'],
+            "tipoContacto" => $contacto,
+            "fechaAgenda" => $date,
+            "idRangoHr" => $horario,
             "asistioPlantel" => false,
-            "actividad" => $request->comentariosBitacora,
-            "claveUsuario" => $request->promotor,
+            "actividad" => $_REQUEST['comentariosBitacora'],
+            "claveUsuario" => $_REQUEST['promotor'],
         );
 
+        //dd($valores);
         $envio = app(PeticionesController::class)->guardarBitacora($valores);
+        
         //dd($envio);
 
-        return redirect()->back();
+        if ($envio === true) {
+            echo true;
+        } else {
+            echo false;
+        }
+    }
+
+    public function getReferidos($folio_crm)
+    {
+
+        $referidosRespone = app(PeticionesController::class)->obtenerReferidosProspecto($folio_crm);
+
+        if (sizeof($referidosRespone) > 0) {
+            if (isset($referidosRespone['ProspectoCallCenter']['folioCRM'])) {
+                $referidosList  = array(
+                    "folioCRM" => $referidosRespone['ProspectoCallCenter']['folioCRM'],
+                    "nombreCompleto" => $referidosRespone['ProspectoCallCenter']['nombreCompleto'],
+                    "telefono1" => $referidosRespone['ProspectoCallCenter']['telefono1'],
+                    "telefono2" => $referidosRespone['ProspectoCallCenter']['telefono2'],
+                    "celular1" => $referidosRespone['ProspectoCallCenter']['celular1'],
+                    "celular2" => $referidosRespone['ProspectoCallCenter']['celular2'],
+                    "email" => $referidosRespone['ProspectoCallCenter']['email']
+                );
+
+                $referidoFinal = array();
+
+                array_push($referidoFinal, $referidosList);
+
+                $referidos = $referidoFinal;
+            } else {
+                $referidos = $referidosRespone['ProspectoCallCenter'];
+            }
+        } else {
+            $referidos = array();
+        }
+
+        return response()->json($referidos);
     }
 
     public function guardarReferido(Request $request)
     {
 
+        //var_dump($_REQUEST['apellidoPaternoReferido']);
         $valores = array(
-            "folioCRM" => $request->folio_crm,
-            "nombre" => $request->nombreReferido,
-            "apPaterno" => $request->apellidoPaternoReferido,
-            "apMaterno" => $request->apellidoMaternoReferido,
-            "telefono" => $request->telefonoReferido,
-            "email" => $request->emailReferido,
-            "claveUsuario" => $request->promotor,
-            "tipoTelefono" => $request->telefonoReferidoType[0],
+            "folioCRM" => $_REQUEST['folioCRM'],
+            "nombre" => $_REQUEST['nombreReferido'],
+            "apPaterno" => $_REQUEST['apellidoPaternoReferido'],
+            "apMaterno" => $_REQUEST['apellidoMaternoReferido'],
+            "telefono" => $_REQUEST['telefonoReferido'],
+            "email" => $_REQUEST['emailReferido'],
+            "claveUsuario" => $_REQUEST['promotor'],
+            "tipoTelefono" => $_REQUEST['telefonoReferidoType'],
         );
 
         $envio = app(PeticionesController::class)->guardarReferidoPeticion($valores);
 
-        //dd($envio);
-
-        return redirect()->back();
+        if ($envio === true) {
+            echo true;
+        } else {
+            echo false;
+        }
     }
 }
