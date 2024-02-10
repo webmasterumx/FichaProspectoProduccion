@@ -8,73 +8,6 @@ function limpiarTabla() {
     }
 }
 
-function searchProspecto() {
-    $('#table_search > tbody').empty();
-    $('#cargador').removeClass('d-none');
-    if ($("#dataBuscador").hasClass("d-none") === false) {
-        $('#dataBuscador').addClass('d-none');
-    }
-
-    var formElement = document.getElementById("form_search");
-    formData = new FormData(formElement);
-
-    let search_type = formData.get('search_crm[]');
-    let search_text = $('#text_crm').val();
-    let search_plantel = $('select[name=plantel_search]').val();
-
-    let ruta = setBaseURL() + "search/crm/" + search_type + "/" + search_text + "/" + search_plantel;
-
-    console.log(ruta);
-
-    if (search_text == null || search_text == "" || search_text == " ") {
-        $('#label-error-text').removeClass('d-none');
-    } else {
-        $('#label-error-text').addClass('d-none');
-
-        $.ajax({
-            url: ruta,
-            method: "GET",
-            dataType: 'json',
-        }).done(function (data) {
-            $('#cargador').removeClass('d-none');
-            console.log(data.length); // imprimimos la respuesta
-            for (let index = 0; index < data.length; index++) {
-                const element = data[index];
-                //console.log(element);
-                let rutaPros = setBaseURL() + "?folio_crm=" + element.folioCRM + "&promotor=" + setPromotor();
-                //console.log(rutaPros);
-                cont = index + 1;
-                if (cont % 2 !== 0) {
-                    //numero inpar
-                    style = "background-color:white !important;";
-                }
-                if (cont % 2 === 0) {
-                    //numero par
-                    style = "background-color:#D3DFE8 !important;";
-                }
-                let fila = `
-                    <tr>
-                        <td style="${style}"><a href="${rutaPros}">${element.folioCRM}</a></td>
-                        <td style="${style}">${element.nombreCompleto}</td>
-                        <td style="${style}">${element.telefono1}</td>
-                        <td style="${style}">${element.telefono2}</td>
-                        <td style="${style}">${element.celular1}</td>
-                        <td style="${style}">${element.celular2}</td>
-                        <td style="${style}">${element.email}</td>
-                    </tr>
-                `;
-                $('#table_search tbody').append(fila);
-            }
-            $('#cargador').addClass('d-none');
-            $('#dataBuscador').removeClass('d-none');
-        }).fail(function (e) {
-            console.log("Request: " + JSON.stringify(e));
-        })
-    } 
-
-
-}
-
 function mostrarEdicionProspecto() {
     console.log('hola');
     $('#mensajes_whatsapp').addClass('d-none');
@@ -83,7 +16,7 @@ function mostrarEdicionProspecto() {
 }
 
 function actualizarReferido() {
-    
+
     let claveCampana = $('select[name=campana_info]').val();
     let clavePlantel = $('select[name=plantel_info]').val();
     let claveNivel = $('select[name=nivel_info]').val();
@@ -108,6 +41,7 @@ function actualizarReferido() {
     }
     else {
 
+        $('#text_carga').html('Guardando datos..');
         $('#modal_carga').modal('show');
         let claveCampana = $('select[name=campana_info]').val();
         let clavePlantel = $('select[name=plantel_info]').val();
@@ -154,4 +88,31 @@ function actualizarReferido() {
 
     }
 
+}
+
+function llenarComboPlantel() {
+    let ruta = setBaseURL() + 'get/planteles';
+
+    $.ajax({
+        url: ruta,
+        method: "GET",
+        dataType: 'json',
+    }).done(function (data) {
+        const plateles = data;
+        let option_default = `<option value="0">Seleciona un plantel</option>`;
+        if (plateles != undefined) {
+            $("#plantel_search").append(option_default); //se establece el plantel por defecto
+            for (let index = 0; index < plateles.length; index++) { //recorrer el array de planteles
+                const element = plateles[index]; // se establece un elemento por plantel optenida
+                let option = `<option value="${element.clave}">${element.descrip}</option>`; //se establece la opcion por campaña
+                $("#plantel_search").append(option); // se inserta la platel de cada elemento
+            }
+        }
+        else {
+            $("#plantel_search").append(option_default);
+        }
+
+    }).fail(function (e) {
+        console.log("Request: " + JSON.stringify(e));
+    });
 }

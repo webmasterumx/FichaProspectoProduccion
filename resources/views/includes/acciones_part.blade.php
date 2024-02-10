@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-12 col-md-2">
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button onclick="llenarComboPlantel()" type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 <i class="bi bi-search"></i> Búsqueda
             </button>
 
@@ -16,7 +16,7 @@
                         <div class="modal-header" style="background: #337ab7;">
                             <h1 class="modal-title text-white fs-5" id="exampleModalLabel">Búsquedas de
                                 prospectos</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            <button onclick="limpiarTabla()" type="button" class="btn-close text-white" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -69,10 +69,6 @@
                                     <p>Si conoces el plantel, seleccionalo aquí:</p>
                                     <select class="form-select" aria-label="Default select example"
                                         name="plantel_search" id="plantel_search">
-                                        <option value="0" selected>Selecciona una opción</option>
-                                        @foreach ($planteles as $plantel)
-                                            <option value="{{ $plantel['clave'] }}"> {{ $plantel['descrip'] }} </option>
-                                        @endforeach
                                     </select>
                                 </div>
                                 <div id="cargador" class="col-12 col-md-12 mt-3 text-center d-none">
