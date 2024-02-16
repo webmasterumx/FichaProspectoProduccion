@@ -70,7 +70,7 @@ function getBitacora() {
         method: "GET",
         dataType: 'json',
     }).done(function (data) {
-        console.log(data); // imprimimos la respuesta
+        //console.log(data); // imprimimos la respuesta
         let bitacora = data.infoProspecto.listaBitacoraSeguimiento.Cls_Bitacora;
         let nombre = data.infoProspecto.termometro;
         let ultimoEstatusDetalle = data.infoProspecto.ultimoEstatusDetalle;
@@ -84,12 +84,12 @@ function getBitacora() {
             }
             let fila = `
                 <tr>
-                    <td style="background-color:white !important;">${bitacora.fechaAgenda}</td>
+                    <td style="background-color:white !important;">${bitacora.fechaHoraRealizacion}</td>
                     <td style="background-color:white !important;">${bitacora.promotorActividad}</td>
                     <td style="background-color:white !important;">${bitacora.actividadRealizada}</td>
                     <td style="background-color:white !important;">${bitacora.estatusDetalle}</td>
                     <td style="background-color:white !important;">${bitacora.actividad}</td>
-                    <td style="background-color:white !important;">${bitacora.fechaHoraCaptura}</td>
+                    <td style="background-color:white !important;">${bitacora.fechaAgenda}</td>
                     <td style="background-color:white !important;">${bitacora.tipoContacto}</td>
                     <td style="background-color:white !important;">${bitacora.promotorPropietario}</td>
                     <td class="text-center" style="background-color:white !important; color: #327AB7 !important; font-size: 22px !important;">${iconoCerrado}</td>
@@ -120,12 +120,12 @@ function getBitacora() {
 
                 let fila = `
                     <tr>
-                        <td style="${style}">${element.fechaAgenda}</td>
+                        <td style="${style}">${element.fechaHoraRealizacion}</td>
                         <td style="${style}">${element.promotorActividad}</td>
                         <td style="${style}">${element.actividadRealizada}</td>
                         <td style="${style}">${element.estatusDetalle}</td>
                         <td style="${style}">${element.actividad}</td>
-                        <td style="${style}">${element.fechaHoraCaptura}</td>
+                        <td style="${style}">${element.fechaAgenda}</td>
                         <td style="${style}">${element.tipoContacto}</td>
                         <td style="${style}">${element.promotorPropietario}</td>
                         <td class="text-center" style="${style} color: #327AB7 !important; font-size: 22px !important;">${iconoCerrado}</td>
@@ -186,10 +186,14 @@ function getBitacora() {
         method: "GET",
         dataType: 'json',
     }).done(function (data) {
-        //console.log(data);
-        //console.log(data.TipoContacto); // imprimimos la respuesta
         for (let index = 0; index < data.TipoContacto.length; index++) {
-            $("#actividadRealizada").append("<option value='" + data.TipoContacto[index].tipoContacto + "'>" + data.TipoContacto[index].Descripcion + "</option>");
+            if (data.TipoContacto[index].tipoContacto == 0) {
+                tipoContacto = "";
+            }
+            else {
+                tipoContacto = data.TipoContacto[index].tipoContacto;
+            }
+            $("#actividadRealizada").append("<option value='" + tipoContacto + "'>" + data.TipoContacto[index].Descripcion + "</option>");
         }
     }).fail(function (e) {
         console.log("Request: " + JSON.stringify(e));

@@ -85,7 +85,7 @@
                     $('#modal_carga').modal('show');
                 });
 
-                $(document).ready(function() {
+                $(document).ready(function() {  
                     let folio_crm = "{{ $_REQUEST['folio_crm'] }}";
                     let promotor = "{{ $_REQUEST['promotor'] }}";
                     let ruta = setBaseURL() + "getFichaProspecto/" + folio_crm + "/" + promotor;
@@ -112,6 +112,7 @@
                             let nombre = infoProspecto.termometro;
                             let ultimoEstatusDetalle = infoProspecto.ultimoEstatusDetalle;
 
+                            //cargarMenuPrincipal();
                             validarMatricula(matricula);
                             llenarInputs(infoProspecto);
                             establecer_color(nombre, ultimoEstatusDetalle);
@@ -119,7 +120,6 @@
                             establecerNumeros(infoProspecto);
                             establecer_redes(listRedes);
                             printInfoPromotor(infoPromotor, dateInfo);
-
                         }
 
                     }).fail(function(e) {
@@ -258,6 +258,7 @@
     <script src="{{ asset('assets/js/combos.js') }}"></script>
     <script src="{{ asset('assets/js/areas.js') }}"></script>
     <script src="{{ asset('assets/js/llenar_combos.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/menu.js') }}"></script> --}}
 </body>
 
 </html>
