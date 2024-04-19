@@ -88,6 +88,11 @@
         @if ($_REQUEST['folio_crm'] == '' || $_REQUEST['folio_crm'] == 'promotor')
             @include('modales.modal_danger_folio')
             <script>
+                function setPromotor() {
+                    let promotor = "{{ $_REQUEST['promotor'] }}";
+                    return promotor;
+                }
+
                 $(document).ready(function() {
                     $("#modal_danger_folio").modal("show");
                 });
@@ -251,6 +256,12 @@
         @endif
     @endif
     @if ($validar_folio == false && $validar_prmotor == false)
+        <script>
+            function setPromotor() {
+                let promotor = 0;
+                return promotor;
+            }
+        </script>
     @endif
     @if ($validar_folio == true && $validar_prmotor == false)
         <script>
@@ -264,6 +275,11 @@
             $(document).ready(function() {
                 $("#modal_error").modal("show");
             });
+
+            function setPromotor() {
+                let promotor = "{{ $_REQUEST['promotor'] }}";
+                return promotor;
+            }
         </script>
     @endif
     <script src="{{ asset('assets/js/app.js') }}"></script>
