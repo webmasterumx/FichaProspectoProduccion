@@ -38,7 +38,7 @@
     </div>
 
     @yield('content')
-
+    
     <footer class="container-fluid bg-unimex text-white p-3">
         <div class="row">
             <div class="col-12 col-md-4 text-center">
