@@ -37,64 +37,54 @@ $("#formReferido").validate({
         },
     },
     submitHandler: function (form) {
-        $('#enviarReferido').attr('disabled', true);
-        $('#cargador_referidos').removeClass('d-none');
-        if ($("#dataReferidos").hasClass("d-none") === false) {
-            $('#dataReferidos').addClass('d-none');
-        }
 
-        let data = new FormData(form);
-        let typeTelefono = data.get('telefonoReferidoType[]');
-        let nombreP = data.get('nombreReferido');
-        let apellidoPP = data.get('apellidoPaternoReferido');
-        let apellidoMP = data.get('apellidoMaternoReferido');
-        let telefonoP = data.get('telefonoReferido');
-        let emailP = data.get('emailReferido');
-        let ruta = setBaseURL() + 'guardar/referido/?telefonoReferidoType=' + typeTelefono + '&nombreReferido=' + nombreP + '&apellidoPaternoReferido=' + apellidoPP + '&apellidoMaternoReferido=' + apellidoMP + '&telefonoReferido=' + telefonoP + '&emailReferido=' + emailP + "&folioCRM=" + setFolioCrm() + "&promotor=" + setPromotor();
+        let promotor = setPromotor();
+        let ruta = setBaseURL() + 'get/infomacion/promotor/' + promotor;
 
-        let xhr = new XMLHttpRequest();
+        $.ajax({
+            url: ruta,
+            method: "GET",
+            dataType: 'json',
+        }).done(function (data) {
+            //console.log(data);
 
-        // 2. Configuración: solicitud GET para la URL /article/.../load
-        xhr.open('GET', ruta);
+            if (data.puesto == 41 || data.puesto == 42) {
+                console.log("la peticion pasa normal");
 
-        // 3. Envía la solicitud a la red
-        xhr.send();
+                let promotor = setPromotor();
 
-        // 4. Esto se llamará después de que la respuesta se reciba
-        xhr.onload = function () {
-            if (xhr.status != 200) { // analiza el estado HTTP de la respuesta
-                console.log(`Error ${xhr.status}: ${xhr.statusText}`); // ej. 404: No encontrado
-            } else { // muestra el resultado
-                console.log(`Hecho, obtenidos ${xhr.response.length} bytes`); // Respuesta del servidor
-                console.log("respuesta: " + xhr.response);
+                agregarReferido(form, promotor);
 
-                if (xhr.response == true || xhr.response == 1) {
-                    $('#messageConfirmacion').html('Referido agregado con exito')
-                    $("#modal_confirmacion").modal("show");
-                    $('#enviarReferido').attr('disabled', false);
-
-                    getReferidos();
-                }
-                else {
-
-                }
-            }
-        };
-
-        xhr.onprogress = function (event) {
-            if (event.lengthComputable) {
-                console.log(`Recibidos ${event.loaded} de ${event.total} bytes`);
             } else {
-                console.log(`Recibidos ${event.loaded} bytes`); // sin Content-Length
+
+                console.log("se valida el combo");
+
+                let promotor = $('select[name=promotor_info]').val();
+
+                if (promotor != 0) {
+
+                    console.log('se agrega el referido pero hay que agregar la clave de promotor del comboo');
+                    agregarReferido(form, promotor);
+
+
+                } else {
+                    console.log('se manda mensaje de error');
+
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Favor de seleccionar promotor que realiza la actividad.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+
             }
 
-        };
 
-        xhr.onerror = function () {
-            console.log("Solicitud fallida");
-        };
-
-        form.reset();
+        }).fail(function (e) {
+            console.log("Request: " + JSON.stringify(e));
+        });
     }
 });
 
@@ -122,65 +112,53 @@ $("#formBitacora").validate({
         }
     },
     submitHandler: function (form) {
-        $('#enviarActividad').attr('disabled', true);
-        $('#cargador_bitacora').removeClass('d-none');
-        if ($("#form_bitacora").hasClass("d-none") === false || $("#lista_bitacora").hasClass("d-none") === false) {
-            $('#form_bitacora').addClass('d-none');
-            $('#lista_bitacora').addClass('d-none');
-        }
-
-        let actividadRealizada = $('select[name=actividadRealizada]').val();
-        let estatusDetalle = $('select[name=estatusDetalle]').val();
-        let proximaActividad = $('select[name=actividadProxima]').val();
-        let fecha = $('#date_bitacora').val();
-        let horarioContacto = $('select[name=horarioContacto]').val();
-        let comentarios = $('#comentariosBitacora').val();
         let promotor = setPromotor();
+        let ruta = setBaseURL() + 'get/infomacion/promotor/' + promotor;
 
-        let ruta = setBaseURL() + "guardar/bitacora/?folio_crm=" + setFolioCrm() + "&actividadRealizada=" + actividadRealizada + "&estatusDetalle=" + estatusDetalle + "&actividadProxima=" + proximaActividad + "&date_bitacora=" + fecha + "&horarioContacto=" + horarioContacto + "&comentariosBitacora=" + comentarios + "&promotor=" + promotor;
-        console.log(ruta);
-        let xhr = new XMLHttpRequest();
+        $.ajax({
+            url: ruta,
+            method: "GET",
+            dataType: 'json',
+        }).done(function (data) {
+            //console.log(data);
 
-        // 2. Configuración: solicitud GET para la URL /article/.../load
-        xhr.open('GET', ruta);
+            if (data.puesto == 41 || data.puesto == 42) {
+                console.log("la peticion pasa normal");
 
-        // 3. Envía la solicitud a la red
-        xhr.send();
+                let promotor = setPromotor();
 
-        // 4. Esto se llamará después de que la respuesta se reciba
-        xhr.onload = function () {
-            if (xhr.status != 200) { // analiza el estado HTTP de la respuesta
-                console.log(`Error ${xhr.status}: ${xhr.statusText}`); // ej. 404: No encontrado
-            } else { // muestra el resultado
-                console.log(`Hecho, obtenidos ${xhr.response.length} bytes`); // Respuesta del servidor
-                console.log("respuesta: " + xhr.response);
+                agregarActividadBitacora(form, promotor);
 
-                if (xhr.response == true || xhr.response == 1) {
-                    $('#messageConfirmacion').html('Datos guardados con exito')
-                    $("#modal_confirmacion").modal("show");
-                    $('#enviarActividad').attr('disabled', false);
-                    getBitacora();
-                }
-                else {
-
-                }
-            }
-        };
-
-        xhr.onprogress = function (event) {
-            if (event.lengthComputable) {
-                console.log(`Recibidos ${event.loaded} de ${event.total} bytes`);
             } else {
-                console.log(`Recibidos ${event.loaded} bytes`); // sin Content-Length
+
+                console.log("se valida el combo");
+
+                let promotor = $('select[name=promotor_info]').val();
+
+                if (promotor != 0) {
+
+                    console.log('se agrega el referido pero hay que agregar la clave de promotor del comboo');
+                    agregarActividadBitacora(form, promotor);
+
+
+                } else {
+                    console.log('se manda mensaje de error');
+
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Favor de seleccionar promotor que realiza la actividad.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+
             }
 
-        };
 
-        xhr.onerror = function () {
-            console.log("Solicitud fallida");
-        };
-
-        form.reset();
+        }).fail(function (e) {
+            console.log("Request: " + JSON.stringify(e));
+        });
     }
 });
 
@@ -201,3 +179,127 @@ $("#form_search").validate({
 
     }
 });
+
+
+function agregarReferido(form, promotor) {
+
+    $('#enviarReferido').attr('disabled', true);
+    $('#cargador_referidos').removeClass('d-none');
+    if ($("#dataReferidos").hasClass("d-none") === false) {
+        $('#dataReferidos').addClass('d-none');
+    }
+
+    let data = new FormData(form);
+    let typeTelefono = data.get('telefonoReferidoType[]');
+    let nombreP = data.get('nombreReferido');
+    let apellidoPP = data.get('apellidoPaternoReferido');
+    let apellidoMP = data.get('apellidoMaternoReferido');
+    let telefonoP = data.get('telefonoReferido');
+    let emailP = data.get('emailReferido');
+    let ruta = setBaseURL() + 'guardar/referido/?telefonoReferidoType=' + typeTelefono + '&nombreReferido=' + nombreP + '&apellidoPaternoReferido=' + apellidoPP + '&apellidoMaternoReferido=' + apellidoMP + '&telefonoReferido=' + telefonoP + '&emailReferido=' + emailP + "&folioCRM=" + setFolioCrm() + "&promotor=" + promotor;
+
+    let xhr = new XMLHttpRequest();
+
+    // 2. Configuración: solicitud GET para la URL /article/.../load
+    xhr.open('GET', ruta);
+
+    // 3. Envía la solicitud a la red
+    xhr.send();
+
+    // 4. Esto se llamará después de que la respuesta se reciba
+    xhr.onload = function () {
+        if (xhr.status != 200) { // analiza el estado HTTP de la respuesta
+            console.log(`Error ${xhr.status}: ${xhr.statusText}`); // ej. 404: No encontrado
+        } else { // muestra el resultado
+            console.log(`Hecho, obtenidos ${xhr.response.length} bytes`); // Respuesta del servidor
+            console.log("respuesta: " + xhr.response);
+
+            if (xhr.response == true || xhr.response == 1) {
+                $('#messageConfirmacion').html('Referido agregado con exito')
+                $("#modal_confirmacion").modal("show");
+                $('#enviarReferido').attr('disabled', false);
+
+                getReferidos();
+            }
+            else {
+
+            }
+        }
+    };
+
+    xhr.onprogress = function (event) {
+        if (event.lengthComputable) {
+            console.log(`Recibidos ${event.loaded} de ${event.total} bytes`);
+        } else {
+            console.log(`Recibidos ${event.loaded} bytes`); // sin Content-Length
+        }
+
+    };
+
+    xhr.onerror = function () {
+        console.log("Solicitud fallida");
+    };
+
+    form.reset();
+}
+
+function agregarActividadBitacora(form, promotor) {
+    $('#enviarActividad').attr('disabled', true);
+    $('#cargador_bitacora').removeClass('d-none');
+    if ($("#form_bitacora").hasClass("d-none") === false || $("#lista_bitacora").hasClass("d-none") === false) {
+        $('#form_bitacora').addClass('d-none');
+        $('#lista_bitacora').addClass('d-none');
+    }
+
+    let actividadRealizada = $('select[name=actividadRealizada]').val();
+    let estatusDetalle = $('select[name=estatusDetalle]').val();
+    let proximaActividad = $('select[name=actividadProxima]').val();
+    let fecha = $('#date_bitacora').val();
+    let horarioContacto = $('select[name=horarioContacto]').val();
+    let comentarios = $('#comentariosBitacora').val();
+
+    let ruta = setBaseURL() + "guardar/bitacora/?folio_crm=" + setFolioCrm() + "&actividadRealizada=" + actividadRealizada + "&estatusDetalle=" + estatusDetalle + "&actividadProxima=" + proximaActividad + "&date_bitacora=" + fecha + "&horarioContacto=" + horarioContacto + "&comentariosBitacora=" + comentarios + "&promotor=" + promotor;
+    console.log(ruta);
+    let xhr = new XMLHttpRequest();
+
+    // 2. Configuración: solicitud GET para la URL /article/.../load
+    xhr.open('GET', ruta);
+
+    // 3. Envía la solicitud a la red
+    xhr.send();
+
+    // 4. Esto se llamará después de que la respuesta se reciba
+    xhr.onload = function () {
+        if (xhr.status != 200) { // analiza el estado HTTP de la respuesta
+            console.log(`Error ${xhr.status}: ${xhr.statusText}`); // ej. 404: No encontrado
+        } else { // muestra el resultado
+            console.log(`Hecho, obtenidos ${xhr.response.length} bytes`); // Respuesta del servidor
+            console.log("respuesta: " + xhr.response);
+
+            if (xhr.response == true || xhr.response == 1) {
+                $('#messageConfirmacion').html('Datos guardados con exito')
+                $("#modal_confirmacion").modal("show");
+                $('#enviarActividad').attr('disabled', false);
+                getBitacora();
+            }
+            else {
+
+            }
+        }
+    };
+
+    xhr.onprogress = function (event) {
+        if (event.lengthComputable) {
+            console.log(`Recibidos ${event.loaded} de ${event.total} bytes`);
+        } else {
+            console.log(`Recibidos ${event.loaded} bytes`); // sin Content-Length
+        }
+
+    };
+
+    xhr.onerror = function () {
+        console.log("Solicitud fallida");
+    };
+
+    form.reset();
+}

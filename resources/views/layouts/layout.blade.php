@@ -38,7 +38,7 @@
     </div>
 
     @yield('content')
-    
+
     <footer class="container-fluid bg-unimex text-white p-3">
         <div class="row">
             <div class="col-12 col-md-4 text-center">
@@ -65,19 +65,6 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
-    <script src="{{ asset('assets/js/menu.js') }}"></script>
-    <script>
-        // incio - funciones de establecimiento 
-
-        function setBaseURL() {
-            let base_url = "{{ env('APP_URL') }}";
-            return base_url;
-        }
-
-        // fin - funciones de establecimiento
-
-        cargarMenuPrincipal();
-    </script>
     <script src="{{ asset('assets/js/bloqueos.js') }}"></script>
     <script src="{{ asset('assets/js/form.js') }}"></script>
     @php
@@ -88,11 +75,6 @@
         @if ($_REQUEST['folio_crm'] == '' || $_REQUEST['folio_crm'] == 'promotor')
             @include('modales.modal_danger_folio')
             <script>
-                function setPromotor() {
-                    let promotor = "{{ $_REQUEST['promotor'] }}";
-                    return promotor;
-                }
-
                 $(document).ready(function() {
                     $("#modal_danger_folio").modal("show");
                 });
@@ -256,12 +238,6 @@
         @endif
     @endif
     @if ($validar_folio == false && $validar_prmotor == false)
-        <script>
-            function setPromotor() {
-                let promotor = 0;
-                return promotor;
-            }
-        </script>
     @endif
     @if ($validar_folio == true && $validar_prmotor == false)
         <script>
@@ -275,11 +251,6 @@
             $(document).ready(function() {
                 $("#modal_error").modal("show");
             });
-
-            function setPromotor() {
-                let promotor = "{{ $_REQUEST['promotor'] }}";
-                return promotor;
-            }
         </script>
     @endif
     <script src="{{ asset('assets/js/app.js') }}"></script>
@@ -288,6 +259,7 @@
     <script src="{{ asset('assets/js/combos.js') }}"></script>
     <script src="{{ asset('assets/js/areas.js') }}"></script>
     <script src="{{ asset('assets/js/llenar_combos.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/menu.js') }}"></script> --}}
 </body>
 
 </html>
