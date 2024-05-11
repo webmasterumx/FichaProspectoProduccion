@@ -103,7 +103,9 @@ function printInfoPromotor(infoPromotor, dateInfo) {
     $('#namePromotor').html(lineaPromotor);
     $('#datePromotor').html(lineaFecha);
 
+    // funcion para validar el puesto del promotor y saber si afectara la estructura de la ficha
     validarPuestoPromotor(infoPromotor);
+
 }
 
 /**

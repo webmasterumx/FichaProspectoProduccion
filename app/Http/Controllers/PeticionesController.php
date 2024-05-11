@@ -10,7 +10,7 @@ use SoapClient;
 class PeticionesController extends Controller
 {
 
-    public $base_url = "https://api.unimexver.edu.mx/api/";
+    public $base_url = "https://api-testing.unimexver.edu.mx/api/";
 
     public function getFichaProspecto($folio_crm)
     {

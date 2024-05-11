@@ -65,6 +65,20 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('assets/js/menu.js') }}"></script>
+    <script>
+        // incio - funciones de establecimiento 
+
+        function setBaseURL() {
+            let base_url = "{{ env('APP_URL') }}";
+            return base_url;
+        }
+
+        // fin - funciones de establecimiento
+
+        cargarMenuPrincipal();
+    </script>
     <script src="{{ asset('assets/js/bloqueos.js') }}"></script>
     <script src="{{ asset('assets/js/form.js') }}"></script>
     @php
@@ -75,6 +89,11 @@
         @if ($_REQUEST['folio_crm'] == '' || $_REQUEST['folio_crm'] == 'promotor')
             @include('modales.modal_danger_folio')
             <script>
+                function setPromotor() {
+                    let promotor = "{{ $_REQUEST['promotor'] }}";
+                    return promotor;
+                }
+
                 $(document).ready(function() {
                     $("#modal_danger_folio").modal("show");
                 });
@@ -128,25 +147,6 @@
                     })
 
                 });
-
-                // incio - funciones de establecimiento 
-
-                function setBaseURL() {
-                    let base_url = "{{ env('APP_URL') }}";
-                    return base_url;
-                }
-
-                function setFolioCrm() {
-                    let folio_crm = "{{ $_REQUEST['folio_crm'] }}";
-                    return folio_crm;
-                }
-
-                function setPromotor() {
-                    let promotor = "{{ $_REQUEST['promotor'] }}";
-                    return promotor;
-                }
-
-                // fin - funciones de establecimiento
 
                 // parte de los mensajes de whats
                 function establecer_mensajes_whats(folioCRM) {
@@ -225,6 +225,16 @@
                     })
                 }
 
+                function setFolioCrm() {
+                    let folio_crm = "{{ $_REQUEST['folio_crm'] }}";
+                    return folio_crm;
+                }
+
+                function setPromotor() {
+                    let promotor = "{{ $_REQUEST['promotor'] }}";
+                    return promotor;
+                }
+
                 const myModal = new bootstrap.Modal('#modal_carga', {
                     backdrop: 'static',
                     keyboard: false
@@ -248,6 +258,12 @@
     @endif
     @if ($validar_folio == false && $validar_prmotor == true)
         <script>
+            function setPromotor() {
+                let promotor = "{{ $_REQUEST['promotor'] }}";
+                return promotor;
+            }
+
+
             $(document).ready(function() {
                 $("#modal_error").modal("show");
             });
@@ -259,7 +275,6 @@
     <script src="{{ asset('assets/js/combos.js') }}"></script>
     <script src="{{ asset('assets/js/areas.js') }}"></script>
     <script src="{{ asset('assets/js/llenar_combos.js') }}"></script>
-    {{-- <script src="{{ asset('assets/js/menu.js') }}"></script> --}}
 </body>
 
 </html>

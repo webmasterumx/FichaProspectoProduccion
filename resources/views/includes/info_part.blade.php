@@ -29,7 +29,7 @@
         campo obligatorio
     </div>
 </div>
-<div  id="sectionPlantel" class="col-12 col-md-4 mb-3">
+<div id="sectionPlantel" class="col-12 col-md-4 mb-3">
     <label for="plantel_info" class="form-label">Plantel:</label>
     <x-select-prospecto id="plantel_info" name="plantel_info"></x-select-prospecto>
     <div id="plantel_info_error" class="text-danger fs-7 d-none">
