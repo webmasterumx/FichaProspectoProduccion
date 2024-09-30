@@ -60,10 +60,11 @@ function submenus(elemento) {
             console.log(data);
 
             let idSubmenu = "#subMenu_" + idMenu;
-            let menuItems = data.Cls_MenuDoctos.sort((a, b) => a.orden - b.orden);
             let item = "";
 
             if (data.Cls_MenuDoctos.descripcion == undefined || data.Cls_MenuDoctos.descripcion == null || data.Cls_MenuDoctos.descripcion == "") {
+
+                let menuItems = data.Cls_MenuDoctos.sort((a, b) => a.orden - b.orden);
 
                 for (let index = 0; index < menuItems.length; index++) {
 

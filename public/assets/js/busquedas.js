@@ -75,7 +75,6 @@ function searchForTelefono() {
 
 function searchProspecto() {
     $('#table_search > tbody').empty();
-    $('#cargador').removeClass('d-none');
     if ($("#dataBuscador").hasClass("d-none") === false) {
         $('#dataBuscador').addClass('d-none');
     }
@@ -95,6 +94,7 @@ function searchProspecto() {
         $('#label-error-text').removeClass('d-none');
     } else {
         $('#label-error-text').addClass('d-none');
+        $('#cargador').removeClass('d-none');
 
         $.ajax({
             url: ruta,

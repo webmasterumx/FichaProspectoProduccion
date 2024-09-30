@@ -44,7 +44,7 @@ class FichaController extends Controller
                 //print('no existe promotor'); //retornar 2
                 return 2;
             }
-        }
+        } 
     }
 
     public function guardarDatosProspecto(Request $request)

@@ -1,6 +1,7 @@
 
 
 function limpiarTabla() {
+    
     $('#table_search > tbody').empty();
 
     if ($("#dataBuscador").hasClass("d-none") === false) {
@@ -8,6 +9,10 @@ function limpiarTabla() {
     }
 
     $('#text_crm').val("");
+    $('#text_resultados').html("");
+
+    //https://unimex.edu.mx/calcula-tu-cuota/?utm_source=El+Universal+secciones&utm_medium=Universaldxd&utm_campaign=2024+1&utm_term=universidad+mexicana&utm_content=metro
+
 }
 
 function mostrarEdicionProspecto() {

@@ -7,6 +7,14 @@ function llenar_combos(infoProspecto) {
     let claveHorario = infoProspecto.claveHorario;
     let origen = infoProspecto.origen;
 
+    console.log("la clave campaña" + claveCampana);
+    console.log("la clave plantel" + clavePlantel);
+    console.log("la clave nivel" + claveNivel);
+    console.log("la clave carrera" + claveCarrera);
+    console.log("la clave horario" + claveHorario);
+    console.log("la clave origen" + origen);
+
+
     llenarComboCampañas(claveCampana);
     llenaComboPlantel(clavePlantel);
     llenarComboNivel(clavePlantel, claveNivel);
@@ -24,7 +32,10 @@ function llenarComboCampañas(claveCampana) {
         method: "GET",
         dataType: 'json',
     }).done(function (data) {
+        console.log('la data optenida en campañas es');
+        console.log(data);
         const campañas = data.EntCampanaDTO;
+        console.log(campañas);
         let option_default = `<option value="">Seleciona una campaña</option>`;
         if (campañas != undefined) {
             $("#campana_info").append(option_default); //se establece la campaña por defecto
@@ -54,7 +65,10 @@ function llenaComboPlantel(clavePlantel) {
         method: "GET",
         dataType: 'json',
     }).done(function (data) {
+        console.log("optenida en planteles es");
+        console.log(data);
         const plateles = data;
+        console.log(plateles);
         let option_default = `<option value="">Seleciona un plantel</option>`;
         if (plateles != undefined) {
             $("#plantel_info").append(option_default); //se establece el plantel por defecto
@@ -82,6 +96,8 @@ function llenarComboNivel(clavePlantel, claveNivel) {
         method: "GET",
         dataType: 'json',
     }).done(function (data) {
+        console.log("la data obtenida para nivel es ");
+        console.log(data);
         const niveles = data;
         let option_default = `<option value="">Seleciona un Nivel</option>`;
         if (niveles != undefined) {
@@ -111,7 +127,10 @@ function llenarCombosCarrera(claveCampana, clavePlantel, claveNivel, claveCarrer
         method: "GET",
         dataType: 'json',
     }).done(function (data) {
+        console.log("la data optenida para carreras es ");
+        console.log(data);
         const carreras = data.Carrera;
+        console.log(carreras);
         let option_default = `<option value="">Seleciona una Carrera</option>`;
         if (carreras != undefined) {
             $("#carrera_info").append(option_default); //se establece la campaña por defecto
@@ -140,8 +159,11 @@ function llenarComboHorarios(claveCampana, clavePlantel, claveNivel, claveCarrer
         method: "GET",
         dataType: 'json',
     }).done(function (data) {
+        console.log("la data optenida en horarios");
+        console.log(data);
         const horarios = data.Horarios;
         let option_default = `<option value="">Seleciona un Horario</option>`;
+        console.log(horarios);
         if (horarios != undefined) {
             $("#horario_info").append(option_default); //se establece la campaña por defecto
             for (let index = 0; index < horarios.length; index++) { //recorrer el array de campañas
@@ -168,7 +190,10 @@ function llenarComboOrigen(origen) {
         method: "GET",
         dataType: 'json',
     }).done(function (data) {
+        console.log("la data para origenes es");
+        console.log(data);
         const origenes = data.OrigenesDTO;
+        console.log(origenes);
         let option_default = `<option value="">Seleciona un origen</option>`;
         if (origenes != undefined) {
             $("#origen_info").append(option_default); //se establece la campaña por defecto
