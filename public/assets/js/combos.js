@@ -1,14 +1,14 @@
 // primer escuchador cambio de campaña
 $("select[name=campana_info]").change(function () {
     $('#campana_info_error').addClass('d-none');
-});
 
-// escuchador de cambio de plantel se llena de nuevo el combo nivel y se resetan carrera y horario
-$("select[name=plantel_info]").change(function () {
-    $('#plantel_info_error').addClass('d-none');
+    //limpieza de los combos siguientes
     $("#nivel_info").empty();
+    $("#nivel_info").append('<option value="" disabled selected>Selecciona un nivel</option>');
     $("#carrera_info").empty();
+    $("#carrera_info").append('<option value="" disabled selected>Selecciona un carrera</option>');
     $("#horario_info").empty();
+    $("#horario_info").append('<option value="" disabled selected>Selecciona un horario</option>');
 
     let plantel = $('select[name=plantel_info]').val();
 
@@ -18,7 +18,37 @@ $("select[name=plantel_info]").change(function () {
         dataType: 'json',
     }).done(function (data) {
         //console.log(data);
-        $("#nivel_info").append('<option value="">Selecciona un nivel</option>');
+        $("#nivel_info").empty();
+        $("#nivel_info").append('<option value="" disabled selected >Selecciona un nivel</option>');
+        for (let index = 0; index < data.length; index++) {
+            const element = data[index].clave;
+            $("#nivel_info").append("<option value='" + data[index].clave +
+                "'>" + data[index].descrip + "</option>");
+        }
+    }).fail(function (e) {
+        console.log("Request: " + JSON.stringify(e));
+    })
+});
+
+// escuchador de cambio de plantel se llena de nuevo el combo nivel y se resetan carrera y horario
+$("select[name=plantel_info]").change(function () {
+    $('#plantel_info_error').addClass('d-none');
+    $("#nivel_info").empty();
+    $("#nivel_info").append('<option value="" disabled selected>Selecciona un nivel</option>');
+    $("#carrera_info").empty();
+    $("#carrera_info").append('<option value="" disabled selected>Selecciona un carrera</option>');
+    $("#horario_info").empty();
+    $("#horario_info").append('<option value="" disabled selected>Selecciona un horario</option>');
+
+    let plantel = $('select[name=plantel_info]').val();
+
+    $.ajax({
+        url: setBaseURL() + "get/niveles/" + plantel,
+        method: "GET",
+        dataType: 'json',
+    }).done(function (data) {
+        //console.log(data);
+        $("#nivel_info").append('<option value="" disabled selected >Selecciona un nivel</option>');
         for (let index = 0; index < data.length; index++) {
             const element = data[index].clave;
             $("#nivel_info").append("<option value='" + data[index].clave +
@@ -33,7 +63,9 @@ $("select[name=plantel_info]").change(function () {
 $("select[name=nivel_info]").change(function () {
     $('#nivel_info_error').addClass('d-none');
     $("#carrera_info").empty();
+    $("#carrera_info").append('<option value="" disabled selected>Selecciona un carrera</option>');
     $("#horario_info").empty();
+    $("#horario_info").append('<option value="" disabled selected>Selecciona un horario</option>');
 
     let claveCampana = $('select[name=campana_info]').val();
     let clavePlantel = $('select[name=plantel_info]').val();
@@ -46,7 +78,6 @@ $("select[name=nivel_info]").change(function () {
         dataType: 'json',
     }).done(function (data) {
         console.log(data);
-        $("#carrera_info").append('<option value="">Selecciona un carrera</option>');
         if (data.length == 0) {
             console.log('no hay carreras disponibles');
         } else if (data.Carrera.length > 0) {
@@ -83,7 +114,7 @@ $("select[name=carrera_info]").change(function () {
         if (data.Horarios.length > 0) {
             //hay array de carreras
             $("#horario_info").append(
-                '<option value="">Selecciona un horario</option>');
+                '<option value="" disabled selected >Selecciona un horario</option>');
             for (let index = 0; index < data.Horarios.length; index++) {
                 const element = data.Horarios[index];
                 //console.log(element);
@@ -92,7 +123,7 @@ $("select[name=carrera_info]").change(function () {
             }
         } else {
             $("#horario_info").append(
-                '<option value="">Selecciona un horario</option>');
+                '<option value="" disabled selected >Selecciona un horario</option>');
             $("#horario_info").append("<option value='" + data.Horarios.Horario + "'>" +
                 data.Horarios.Descripcion + "</option>")
         }
@@ -113,12 +144,73 @@ $("select[name=estatusDetalle]").change(function () {
         $('select[name=actividadProxima]').attr('disabled', true);
         $('#date_bitacora').attr('disabled', true);
         $('select[name=horarioContacto]').attr('disabled', true);
-    } 
+
+        $("#actividadProxima").removeClass("error");
+        $("#date_bitacora").removeClass("error");
+        $("#horarioContacto").removeClass("error");
+
+        $("#actividadProxima-error").hide();
+        $("#horarioContacto-error").hide();
+        $("#date_bitacora-error").hide();
+
+        $("#actividadProxima").empty();
+        $("#actividadProxima").append(`<option value="">Selecciona Próxima Actividad</option>`);
+        $("#date_bitacora").val("");
+        $("#horarioContacto").empty();
+        $("#horarioContacto").append(`<option value="">Seleccion Horario de Contactación</option>`);
+
+    }
     if (validacion == 1) {
         $('select[name=actividadProxima]').attr('disabled', false);
         $('#date_bitacora').attr('disabled', false);
         $('select[name=horarioContacto]').attr('disabled', false);
-    } 
+
+        $("#actividadProxima").empty();
+        //$("#actividadProxima").append(`<option value="">Selecciona Próxima Actividad</option>`);
+        $("#date_bitacora").val("");
+        $("#horarioContacto").empty();
+        //$("#horarioContacto").append(`<option value="">Seleccion Horario de Contactación</option>`);
+
+        let combo2 = setBaseURL() + "obtener/horariosContacto";
+        let combo4 = setBaseURL() + "obtener/actividadesProximas/" + 2
+
+        $.ajax({
+            url: combo4,
+            method: "GET",
+            dataType: 'json',
+        }).done(function (data) {
+            //console.log(data);
+            //console.log(data.TipoContacto); // imprimimos la respuesta
+            for (let index = 0; index < data.TipoContacto.length; index++) {
+                if (data.TipoContacto[index].tipoContacto == 0) {
+                    tipoContacto = "";
+                }
+                else {
+                    tipoContacto = data.TipoContacto[index].tipoContacto;
+                }
+                $("#actividadProxima").append("<option value='" + tipoContacto + "'>" + data.TipoContacto[index].Descripcion + "</option>");
+            }
+
+        }).fail(function (e) {
+            console.log("Request: " + JSON.stringify(e));
+        })
+
+        $.ajax({
+            url: combo2,
+            method: "GET",
+            dataType: 'json',
+        }).done(function (data) {
+            //console.log(data);
+            $("#horarioContacto").append('<option value="">Seleccion Horario de Contactación</option>');
+            //console.log(data.RangoContactacion); // imprimimos la respuesta
+            for (let index = 0; index < data.RangoContactacion.length; index++) {
+                $("#horarioContacto").append("<option value='" + data.RangoContactacion[index].id + "'>" + data.RangoContactacion[index].nombre + "</option>");
+            }
+        }).fail(function (e) {
+            console.log("Request: " + JSON.stringify(e));
+        })
+
+    }
 
 
 });

@@ -77,7 +77,8 @@
 
         // fin - funciones de establecimiento
 
-        cargarMenuPrincipal();
+        //cargarMenuPrincipal();
+        cargarMenuTest()
     </script>
     <script src="{{ asset('assets/js/bloqueos.js') }}"></script>
     <script src="{{ asset('assets/js/form.js') }}"></script>

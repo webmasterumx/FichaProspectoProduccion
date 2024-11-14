@@ -36,7 +36,7 @@ function llenarComboCampañas(claveCampana) {
         console.log(data);
         const campañas = data.EntCampanaDTO;
         console.log(campañas);
-        let option_default = `<option value="">Seleciona una campaña</option>`;
+        let option_default = `<option value="" disabled selected>Seleciona una campaña</option>`;
         if (campañas != undefined) {
             $("#campana_info").append(option_default); //se establece la campaña por defecto
             for (let index = 0; index < campañas.length; index++) { //recorrer el array de campañas
@@ -69,7 +69,7 @@ function llenaComboPlantel(clavePlantel) {
         console.log(data);
         const plateles = data;
         console.log(plateles);
-        let option_default = `<option value="">Seleciona un plantel</option>`;
+        let option_default = `<option value="" disabled selected>Seleciona un plantel</option>`;
         if (plateles != undefined) {
             $("#plantel_info").append(option_default); //se establece el plantel por defecto
             for (let index = 0; index < plateles.length; index++) { //recorrer el array de planteles
@@ -99,7 +99,7 @@ function llenarComboNivel(clavePlantel, claveNivel) {
         console.log("la data obtenida para nivel es ");
         console.log(data);
         const niveles = data;
-        let option_default = `<option value="">Seleciona un Nivel</option>`;
+        let option_default = `<option value="" disabled selected>Seleciona un Nivel</option>`;
         if (niveles != undefined) {
             $("#nivel_info").append(option_default); //se establece la campaña por defecto
             for (let index = 0; index < niveles.length; index++) { //recorrer el array de campañas
@@ -131,7 +131,7 @@ function llenarCombosCarrera(claveCampana, clavePlantel, claveNivel, claveCarrer
         console.log(data);
         const carreras = data.Carrera;
         console.log(carreras);
-        let option_default = `<option value="">Seleciona una Carrera</option>`;
+        let option_default = `<option value="" disabled selected>Seleciona una Carrera</option>`;
         if (carreras != undefined) {
             $("#carrera_info").append(option_default); //se establece la campaña por defecto
             for (let index = 0; index < carreras.length; index++) { //recorrer el array de campañas
@@ -162,13 +162,19 @@ function llenarComboHorarios(claveCampana, clavePlantel, claveNivel, claveCarrer
         console.log("la data optenida en horarios");
         console.log(data);
         const horarios = data.Horarios;
-        let option_default = `<option value="">Seleciona un Horario</option>`;
+        let option_default = `<option value="" disabled selected>Seleciona un Horario</option>`;
         console.log(horarios);
         if (horarios != undefined) {
             $("#horario_info").append(option_default); //se establece la campaña por defecto
-            for (let index = 0; index < horarios.length; index++) { //recorrer el array de campañas
-                const element = horarios[index]; // se establece un elemento por campaña optenida
-                let option = `<option value="${element.Horario}">${element.Descripcion}</option>`; //se establece la opcion por campaña
+
+            if (horarios.Clave_turno == undefined || horarios.Clave_turno == null) {
+                for (let index = 0; index < horarios.length; index++) { //recorrer el array de campañas
+                    const element = horarios[index]; // se establece un elemento por campaña optenida
+                    let option = `<option value="${element.Horario}">${element.Descripcion}</option>`; //se establece la opcion por campaña
+                    $("#horario_info").append(option); // se inserta la campaña de cada elemen  to
+                }
+            } else {
+                let option = `<option value="${horarios.Horario}">${horarios.Descripcion}</option>`; //se establece la opcion por campaña
                 $("#horario_info").append(option); // se inserta la campaña de cada elemen  to
             }
         }
@@ -194,7 +200,7 @@ function llenarComboOrigen(origen) {
         console.log(data);
         const origenes = data.OrigenesDTO;
         console.log(origenes);
-        let option_default = `<option value="">Seleciona un origen</option>`;
+        let option_default = `<option value="" disabled selected>Seleciona un origen</option>`;
         if (origenes != undefined) {
             $("#origen_info").append(option_default); //se establece la campaña por defecto
             for (let index = 0; index < origenes.length; index++) { //recorrer el array de campañas

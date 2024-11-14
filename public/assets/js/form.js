@@ -98,6 +98,15 @@ $("#formBitacora").validate({
         },
         comentariosBitacora: {
             required: true,
+        },
+        actividadProxima: {
+            required: true,
+        },
+        horarioContacto: {
+            required: true,
+        },
+        date_bitacora: {
+            required: true,
         }
     },
     messages: {
@@ -109,6 +118,15 @@ $("#formBitacora").validate({
         },
         comentariosBitacora: {
             required: "campo requerido"
+        },
+        actividadProxima: {
+            required: "campo requerido",
+        },
+        horarioContacto: {
+            required: "campo requerido",
+        },
+        date_bitacora: {
+            required: "campo requerido",
         }
     },
     submitHandler: function (form) {
